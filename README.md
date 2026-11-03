@@ -1,2 +1,2 @@
-# IDEATHON_2026-Mobilidade-Urbana-Sustentabilidade-
- Repositório criado para o desenvolvimento do IDEATHON de 2026, com a proposta de um projeto que envolva a mobilidade urbana e sustentabilidade.
+# IDEATHON_2026-Pedal-Que-Move-(Bicicleteiros-Unidos)
+ O projeto 'Pedal que Move' tem a intenção de incentivar a mobilização da sociedade de maneira limpa para fins sustentáveis na sociedade, visando também o impacto social positivo dentro do contexto relacionado ao trânsito urbano, com a iniciativa de diminuir o congestionamento de veículos e a deterioração da atmosfera em regiões metropolitanas.
