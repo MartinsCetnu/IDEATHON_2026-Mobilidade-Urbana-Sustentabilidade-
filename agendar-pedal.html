@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendar treino</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --verde-escuro: #355344;
+      --verde: #438d7d;
+      --verde-claro: #eaf8f3;
+      --texto: #17211d;
+      --cinza: #6b7771;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--verde-claro);
+      color: var(--texto);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .pagina {
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .barra-lateral {
+      width: 110px;
+      min-height: 100vh;
+      background: var(--verde-escuro);
+      border-radius: 0 22px 22px 0;
+      flex-shrink: 0;
+    }
+
+    .conteudo {
+      width: min(850px, calc(100% - 64px));
+      margin: 0 auto;
+      padding: 70px 20px 55px;
+    }
+
+    h1 {
+      margin-bottom: 24px;
+      font-size: clamp(28px, 4vw, 40px);
+      letter-spacing: -1px;
+    }
+
+    .mapa {
+      height: 330px;
+      position: relative;
+      overflow: hidden;
+      border: 3px solid var(--verde-escuro);
+      border-radius: 34px;
+      background-color: #edf0ed;
+      background-image:
+        linear-gradient(38deg, transparent 47%, #c8d3d2 48%, #c8d3d2 50%, transparent 51%),
+        linear-gradient(135deg, transparent 44%, #d3dcda 45%, #d3dcda 47%, transparent 48%),
+        linear-gradient(90deg, transparent 48%, #d9e0de 49%, #d9e0de 51%, transparent 52%),
+        linear-gradient(0deg, transparent 48%, #d9e0de 49%, #d9e0de 51%, transparent 52%);
+      background-size: 260px 210px, 300px 240px, 160px 150px, 190px 130px;
+      background-position: center;
+    }
+
+    .mapa::before,
+    .mapa::after {
+      content: "";
+      position: absolute;
+      background: #ffffff;
+      border: 5px solid #d2dcda;
+      border-radius: 999px;
+      transform: rotate(-28deg);
+    }
+
+    .mapa::before {
+      width: 120%;
+      height: 24px;
+      left: -10%;
+      top: 43%;
+    }
+
+    .mapa::after {
+      width: 24px;
+      height: 130%;
+      left: 61%;
+      top: -15%;
+    }
+
+    .marcador {
+      position: absolute;
+      z-index: 1;
+      top: 42%;
+      left: 54%;
+      width: 18px;
+      height: 18px;
+      border: 5px solid white;
+      border-radius: 50%;
+      background: var(--verde);
+      box-shadow: 0 1px 6px #0003;
+    }
+
+    .aviso-mapa {
+      position: absolute;
+      z-index: 1;
+      right: 18px;
+      bottom: 16px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: #ffffffdf;
+      color: #52635a;
+      font-size: 13px;
+    }
+
+    .formulario {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-top: 28px;
+    }
+
+    .campos {
+      display: flex;
+      flex: 1;
+      gap: 20px;
+    }
+
+    .campo {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .campo label {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .campo input {
+      width: 100%;
+      min-height: 49px;
+      padding: 10px 12px;
+      border: 2px solid #b7cec3;
+      border-radius: 12px;
+      background: #fff;
+      color: var(--texto);
+      font: inherit;
+    }
+
+    .campo input:focus {
+      outline: 3px solid #438d7d40;
+      border-color: var(--verde);
+    }
+
+    .botao {
+      min-height: 54px;
+      padding: 0 27px;
+      border: 0;
+      border-radius: 30px;
+      background: linear-gradient(100deg, #4ba58d, #39848b);
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .botao:hover {
+      filter: brightness(1.06);
+    }
+
+    @media (max-width: 700px) {
+      .barra-lateral {
+        width: 22px;
+        border-radius: 0 12px 12px 0;
+      }
+
+      .conteudo {
+        width: calc(100% - 38px);
+        padding: 42px 10px;
+      }
+
+      .mapa {
+        height: 260px;
+        border-radius: 24px;
+      }
+
+      .formulario,
+      .campos {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .formulario {
+        gap: 20px;
+      }
+
+      .campos {
+        gap: 16px;
+      }
+
+      .botao {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="pagina">
+    <aside class="barra-lateral" aria-hidden="true"></aside>
+
+    <main class="conteudo">
+      <h1>Agendar treino</h1>
+
+      <section class="mapa" aria-label="Espaço reservado para exibir o mapa do pedal">
+        <span class="marcador" aria-hidden="true"></span>
+        <span class="aviso-mapa">Mapa e rota em breve</span>
+      </section>
+
+      <form class="formulario">
+        <div class="campos">
+          <div class="campo">
+            <label for="data">Data</label>
+            <input type="date" id="data" name="data" required>
+          </div>
+
+          <div class="campo">
+            <label for="hora">Horário</label>
+            <input type="time" id="hora" name="hora" required>
+          </div>
+        </div>
+
+        <button class="botao" type="button">Criar trajeto</button>
+      </form>
+    </main>
+  </div>
+</body>
+</html>
