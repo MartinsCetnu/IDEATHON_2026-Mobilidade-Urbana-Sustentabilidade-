@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='utf-8'>
+   <title>Conquistas && Ranqueamentos</title>
+   <style>
+   html {
+   	background-color: white;
+   	color: black;
+   	overflow-y: auto;
+   }
+
+	h2 {
+		margin-left: 31%;
+	}
+
+   #Ranking {
+   	background-color: SkyBlue;
+   	opacity-color: 50%;
+   	width: 300px;
+   	height: 300px;
+   	border-radius: 2.5%;
+   	position: relative;
+   	text-align: center;
+   	position: relative;
+   }
+
+   #QuantRotas {
+		background-color: DarkGoldenRod;
+		width: 300px;
+		height: 300px;
+		border-radius: 2.5%;
+		text-align: center;	
+		
+   }
+
+	#sumKM {
+		background-color: ForestGreen;
+		width: 300px;
+		height: 300px;
+		border-radius: 2.5%;
+		text-align: center;
+	}
+
+	.container {
+	margin-left: 1%;
+		display: inline-block;
+		overflow:scroll;
+	}
+
+	.neo {
+		background-color: pink;
+		height: 50px;
+		overflow:scroll;
+	}
+
+	table {
+		border: 1px solid black;
+	}
+
+	#number {
+		font-size: x-large;
+	}
+	
+	table,th,td {
+		text-align: center;
+		border: 1px solid black;
+		margin-left: 5%;
+	}
+
+	#btnShowPass {
+		position: absolute;
+		margin-left: 90px;
+	}
+
+	#btnShowCom {
+		position: absolute;
+				margin-left: 401px;
+				margin-top: -20px;
+			}
+
+	#btnShowKm {
+		position: absolute;
+		margin-left: 726px;
+		margin-top: -20px;
+		
+	}
+
+	
+    </style>
+  </head>
+  <body>
+     <h2>RANKINGS</h2>
+      <br>
+      <br>
+         <div id="Ranking" class ="container"><b>Rankings</b>
+         <br>
+         <br>
+         <br>
+				 <b>Maior Número de Passeios..:</b>
+				 <br>
+				 <br>
+				  <table id="MainTable">
+				   <thead>
+					   <tr>
+					 <th> Posição </th>
+					 <th> Nickname </th>
+					 <th> quantidade </th>
+					   </tr>
+					    </thead>
+					   <tbody id="CorpoDaTabela">
+						</tbody>
+				  </table>
+         </div>
+         <div id="QuantRotas" class="container"><b>Rotas Complexas Finalizadas</b>
+         <br>
+         <br>
+         <br>
+			<text><b>Quantidade de Rotas..:</b></text>
+				 <br>
+				 <br>
+				 <table id="SecondTable">
+				 				   <thead>
+				 					   <tr>
+				 					 <th> Posição </th>
+				 					 <th> Nickname </th>
+				 					 <th> quantidade </th>
+				 					   </tr>
+				 					    </thead>
+				 					   <tbody id="SegundoCorpoDaTabela">
+				 						</tbody>
+				 				  </table>
+         </div>
+         <div id="sumKM" class="container"><b>Quilometragem Total</b>
+					<br>
+					<br>
+					<br>
+	<text><b>Quantidade até agora..:</b></text>
+					<br>
+					<br>
+		<table id="LastTable">
+				<thead>
+					<tr>
+				    <th> Posição </th>
+						<th> Nickname </th>
+						<th> quantidade </th>
+										</tr>
+											</thead>
+													<tbody id="UltimoCorpoDaTabela">
+										</tbody>
+							</table>
+         </div>
+         <br>
+			<button id="btnShowPass" onclick="alternaConteudoRide()">Show Rank (Passeios)</button>
+				 <br>
+				 <button id="btnShowCom" onclick="alternaConteudoCom()">Show Rank(Rotas Com.)</button>
+				 <button id="btnShowKm" onclick="alternaConteudoKm()">Show Rank(Km rodado)</button>
+	<script>
+	function alternaConteudoRide() {
+		var componenteGet = document.getElementById("Ranking");
+		if(componenteGet.style.display === "none") 
+		{
+			componenteGet.style.display = "";
+		} 
+		else 
+		{
+		 componenteGet.style.display = "none";	
+		}
+	}		
+	</script>
+	<script>
+	function alternaConteudoCom() {
+		var componenteGet = document.getElementById("QuantRotas");
+				if(componenteGet.style.display === "none") 
+				{
+					componenteGet.style.display = "";
+				} 
+				else 
+				{
+				 componenteGet.style.display = "none";	
+				}
+	}
+	</script>
+
+	<script>
+ function alternaConteudoKm() {
+ 		var componenteGet = document.getElementById("sumKM");
+				if(componenteGet.style.display === "none") 
+				{
+					componenteGet.style.display = "";
+				} 
+				else 
+				{
+				 componenteGet.style.display = "none";	
+				}
+ }
+	</script>
+         
+         <script src= "PositionByRide.js"></script>
+         <script src="PositionByCompRide.js"></script>
+         <script src= "PositionBykm.js"></script>
+   </body>
+</html>
