@@ -1,0 +1,6 @@
+"passeio_id","passeio_titulo","passeio_descricao","passeio_imagem","passeio_locini","passeio_locfim","passeio_data","passeio_hora","passeio_distancia"
+"1","Pedalada Noturna da Cidade","Percurso leve passando pelos principais pontos urbanos, ideal para iniciantes.","https://thumbs.dreamstime.com/b/um-menino-novo-em-uma-cena-de-um-inc%C3%AAndio-10027468.jpg","Praça 500 anos","Praça 500 anos","2026-11-10","19:30:00","16"
+"pasint_id","usuario_id","passeio_id"
+"1","1","1"
+"usuario_id","usuario_nome","usuario_senha"
+"1","Roberto","123"
