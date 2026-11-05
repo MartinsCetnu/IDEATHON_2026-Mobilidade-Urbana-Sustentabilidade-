@@ -1,39 +1,48 @@
 <?php
+// Inicia a sessão no topo absoluto do arquivo (regra de ouro do PHP)
+session_start();
+$_SESSION['usuario_id'] = $_SESSION['usuario_id'] ?? 1; 
+
 // Configurações de conexão com o MySQL local (XAMPP) usando MySQLi
 $host    = 'localhost';
 $usuario = 'root';
 $senha   = '';
-$banco   = 'nome_do_seu_banco';
+$banco   = 'ideathon_2026'; // Banco correto do seu arquivo SQL
 
 // Criando a conexão com MySQLi
 $conn = new mysqli($host, $usuario, $senha, $banco);
 
-// Verifica se houve erro na conexão
 if ($conn->connect_error) {
     die("Erro na conexão com o banco de dados: " . $conn->connect_error);
 }
 
-// Define o charset para utf8mb4 para aceitar acentuação corretamente
 $conn->set_charset("utf8mb4");
 
-// Obtém o ID do passeio via GET na URL (ex: index.php?id=1). Se não houver, assume o ID 1
+// Obtém o ID do passeio via GET na URL
 $passeio_id = isset($_GET['id']) ? intval($_GET['id']) : 1;
 
-// Busca os dados do passeio no banco de dados usando Prepared Statement do MySQLi
-$sql = "SELECT titulo, descricao, imagem, inicio, fim, data, hora FROM passeios WHERE id = ?";
+// Busca os dados usando os nomes EXATOS das colunas da tabela 'passeios' no seu SQL
+$sql = "SELECT passeio_titulo, passeio_descricao, passeio_imagem, passeio_locini, passeio_locfim, passeio_data, passeio_hora FROM passeios WHERE passeio_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $passeio_id);
 $stmt->execute();
 $result = $stmt->get_result();
-
 $passeio = $result->fetch_assoc();
-
-// Fecha o statement de busca
 $stmt->close();
 
-// Simulação do ID do usuário logado na sessão (substitua pela sua lógica de auth)
-session_start();
-$_SESSION['usuario_id'] = $_SESSION['usuario_id'] ?? 1; 
+// Busca o total de pessoas interessadas neste passeio
+$total_interessados = 0;
+$sql_count = "SELECT COUNT(*) AS total FROM passeio_interesses WHERE passeio_id = ?";
+$stmt_count = $conn->prepare($sql_count);
+if ($stmt_count) {
+    $stmt_count->bind_param("i", $passeio_id);
+    $stmt_count->execute();
+    $res_count = $stmt_count->get_result();
+    if ($row_count = $res_count->fetch_assoc()) {
+        $total_interessados = $row_count['total'];
+    }
+    $stmt_count->close();
+}
 ?>
 
 <!DOCTYPE html>
@@ -47,18 +56,12 @@ $_SESSION['usuario_id'] = $_SESSION['usuario_id'] ?? 1;
 
     <header>
         <nav>
-            <!-- Logo -->
             <a href="index.php">Pedal que Move</a>
-
-            <!-- Links -->
             <ul>
                 <li><a href="index.php">Início</a></li>
-                <!-- Página do Augusto -->
                 <li><a href="XYZ.php">Conquistas e Ranqueamento</a></li>
-                <!-- Página do Douglas -->
                 <li><a href="ABC.php">Criar um Passeio</a></li>
             </ul>
-
         </nav>
     </header>
 
@@ -68,27 +71,25 @@ $_SESSION['usuario_id'] = $_SESSION['usuario_id'] ?? 1;
         <?php if ($passeio): ?>
             <article>
                 <header>
-                    <h2><?php echo htmlspecialchars($passeio['titulo']); ?></h2>
+                    <h2><?php echo htmlspecialchars($passeio['passeio_titulo']); ?></h2>
                 </header>
 
-                <!-- Mapa do passeio -->
                 <figure>
                     <img 
-                        src="<?php echo htmlspecialchars($passeio['imagem'] ?? 'caminho/para/imagem_padrao.jpg'); ?>" 
-                        alt="Imagem do percurso do passeio: <?php echo htmlspecialchars($passeio['titulo']); ?>"
+                        src="<?php echo htmlspecialchars($passeio['passeio_imagem'] ?? 'caminho/para/imagem_padrao.jpg'); ?>" 
+                        alt="Imagem do percurso"
                     >
                 </figure>
 
-                <!-- Revisar mediante apresentação das tabelas do BD -->
                 <section>
-                    <p><strong>início:</strong> <?php echo htmlspecialchars($passeio['inicio']); ?></p>
-                    <p><strong>data:</strong> <?php echo date('d/m/Y', strtotime($passeio['data'])); ?></p>
-                    <p><strong>fim:</strong> <?php echo htmlspecialchars($passeio['fim']); ?></p>
-                    <p><strong>hora:</strong> <?php echo date('H:i', strtotime($passeio['hora'])); ?></p>
-                    <p><strong>pessoas interessadas:</strong> <!-- Aqui pode ser inserida uma query de contagem --></p>
+                    <p><strong>início:</strong> <?php echo htmlspecialchars($passeio['passeio_locini']); ?></p>
+                    <p><strong>data:</strong> <?php echo date('d/m/Y', strtotime($passeio['passeio_data'])); ?></p>
+                    <p><strong>fim:</strong> <?php echo htmlspecialchars($passeio['passeio_locfim']); ?></p>
+                    <p><strong>hora:</strong> <?php echo date('H:i', strtotime($passeio['passeio_hora'])); ?></p>
+                    <p><strong>pessoas interessadas:</strong> <?php echo $total_interessados; ?> ciclistas</p>
                 </section>
 
-                <!-- Botão registrar o participante -->
+                <!-- Formulário apontando para salvar_interesse.php -->
                 <form action="salvar_interesse.php" method="POST">
                     <input type="hidden" name="passeio_id" value="<?php echo $passeio_id; ?>">
                     <input type="hidden" name="usuario_id" value="<?php echo $_SESSION['usuario_id']; ?>">
@@ -96,25 +97,14 @@ $_SESSION['usuario_id'] = $_SESSION['usuario_id'] ?? 1;
                 </form>
             </article>
         <?php else: ?>
-            <p>Passeio não encontrado.</p>
+            <p>Passeio não encontrado ou tabela vazia. Certifique-se de inserir um registro no banco.</p>
         <?php endif; ?>
     </main>
 
     <footer>
         <div class="copyRights">
-        <p>&copy; 2026 PedalQueMove. Todos os direitos reservados.</p>
-        
-        <ul class="linksDeRodape">
-            <li><a href="termos.php">Termos de Uso</a></li>
-            <li><a href="privacidade.php">Política de Privacidade</a></li>
-            <li><a href="contato.php">Contato</a></li>
-        </ul>
-                <!-- Precisa convalidar -->
-        <div class="social-links">
-            <a href="#" target="_blank">Instagram</a> | 
-            <a href="#" target="_blank">Strava</a>
+            <p>&copy; 2026 PedalQueMove. Todos os direitos reservados.</p>
         </div>
-    </div>
     </footer>
 
 </body>
