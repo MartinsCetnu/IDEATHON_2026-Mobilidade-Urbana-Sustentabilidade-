@@ -1,0 +1,111 @@
+/*css pedal que move*/
+
+
+body {
+	background-color: #deebd5;
+	
+}
+
+.menubackground {
+	border-radius: 22px;
+	width: 12%;
+	height: 650px;
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	background-image: linear-gradient(180deg, #3e5b3b, #395459);
+	padding: 20px;
+	margin-left: -25px;
+	margin-top: 23px;
+}
+
+.menuoptions {
+	text-decoration: none;
+	font-family: "Jost";
+	font-size:200%;
+	color:#ebfaf4;
+	text-align: center;
+	width:100%;
+	height: 12%;
+	position: relative;
+	padding: 10px;
+	padding-left:10%;
+	padding-bottom: 15%;
+	margin-top: 10%;
+	margin-left: -10px;
+	cursor: pointer;
+	transition: width 0.5s, background-color 0.5s, outline 0.2s, border-radius 0.5s, color 0.2s;
+}
+
+.menuoptions:hover {
+	width: 130%;
+	background-color: #71c299;
+	outline: 2px solid #395459;
+	border-radius: 0% 60px 60px 0%;
+	/*margin-left: -20px;*/
+	color: #09051b;
+}
+
+.conteudo-conteiner {
+	width: 65%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	/*background-color: red;*/
+	margin: auto;
+}
+
+.conteudo-title {
+	font-family: "Syncopate"; 
+	font-size: 250%;
+	color:#09051b;
+	margin-top: 5%;
+	padding-left:5%;
+	
+}
+
+.conteudo {
+	border-radius: 57px;
+	width: 85%;
+	height: 500px;
+	position: relative;
+	background-color: #effff8;
+	padding: 5%;
+	border: 4px solid #6faf68;
+	margin: auto;
+	margin-top: 2%;
+	
+}
+
+
+.conteudo-escrito {
+	width: 90%;
+	height: 45%;
+	font-family: "Jost";
+	font-size: 300%;
+	margin-top: 3px;
+	position: absolute;
+	bottom:0px;
+}
+
+.mapa{
+	border-radius:34px;
+	width: 95%;
+	height: 50%;
+	position: absolute;
+	border: 3px solid #3e5b3b;
+	margin: auto;
+	margin-left:-3%;
+	margin-top: -3%;
+}
+
+.conta{
+	border-radius: 50px 0px 0px 50px;
+	width: 20%;
+	height: 100px;
+	position: fixed;
+	top: 0;
+	right: 0;
+	background-image: linear-gradient(180deg, #3e5b3b, #395459);
+}
