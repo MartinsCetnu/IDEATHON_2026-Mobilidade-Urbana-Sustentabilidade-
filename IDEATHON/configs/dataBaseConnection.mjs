@@ -1,3 +1,4 @@
+//Caso queiram rodar na máquina de vocês, o node vocês rodam o npm install 'mysql2'
 import mysql from 'mysql2'; //pega o pacote 'mysql' no qual foi instalado em 'Node-Modules'
 
 	const pool = mysql.createPool({
