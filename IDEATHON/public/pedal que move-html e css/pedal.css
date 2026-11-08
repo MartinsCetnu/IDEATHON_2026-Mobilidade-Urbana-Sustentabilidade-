@@ -148,7 +148,6 @@ box-sizing: border-box;
 
 .formulario-painel {
 	  display: grid;
-    /* Ajustamos a proporção para 2fr (Nome) e 1fr (Data/Horário) para dar mais espaço ao input de texto */
     grid-template-columns: 2fr 1fr; 
     gap: 25px; 
     width: 100%;
@@ -217,8 +216,8 @@ box-sizing: border-box;
 	padding: 12px 24px;
 	cursor: pointer;
 	width: auto;
-	min-width: 200px; /* Botão ligeiramente mais largo para equilibrar com os inputs maiores */
-	align-self: center; /* Mantém o seu botão centralizado perfeitamente embaixo */
+	min-width: 200px; 
+	align-self: center; 
 	text-align: center;
 	transition: transform 0.1s, filter 0.2s;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
