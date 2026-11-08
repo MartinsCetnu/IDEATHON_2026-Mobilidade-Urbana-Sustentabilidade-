@@ -1,3 +1,4 @@
+//Mesma Lógica da API.mjs
 import express from 'express';
 import cors from 'cors';
 import pool from '../../configs/dataBaseConnection.mjs';
