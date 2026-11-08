@@ -1,68 +1,43 @@
 //Script para alteração dos valores dentro das 
 //divs de rankings(RotasComplexas)..:
-
 //Div Tabelas:
 // -> Posicao Ranking dos participantes
-const posicaoRankingCom = [
-	{nome: "Augusto", quant: 4},
-	{nome: "Isadora", quant: 3},
-	{nome: "Eduardo", quant: 3},
-	{nome: "Claudio", quant: 3},
-	{nome: "Larissa", quant: 2},
-	{nome: "Roger",   quant: 2},
-	{nome: "Douglas", quant: 1},
-	{nome: "Maya",    quant: 0}
-];
 
 
+async function updateRankPerComp() {
 
-const  DivTabelasCom = document.getElementById("SegundoCorpoDaTabela");
-const buttonFunction = document.getElementById("btnShowCom");
+	const DivTabelasCom = document.getElementById("Corpo_");
+	try {
+		const callAPI__ = await fetch ('http://localhost:5000/api/rankingRide');
+		if(!callAPI__.ok) throw new Error ('Erro de Comunicacao IDENTIFICADO!!');
 
+		const dadosTraduzido__ = await callAPI__.json();
 
- function ShowPlayers() {
- DivTabelasCom.innerHTML = "";
-  posicaoRankingCom.forEach((dadoAtual,index) => {
-	
-	const newRow = DivTabelasCom.insertRow(-1);
-  
-	const valorCelula = newRow.insertCell(0);
-	valorCelula.textContent = index +1;
-	
-	const novaCelula = newRow.insertCell(1);
-	novaCelula.textContent = dadoAtual.nome;
-	
-	const ultimaCelula = newRow.insertCell(2);
-	ultimaCelula.textContent = Math.floor(dadoAtual.quant);
-});	
+		DivTabelasCom.innerHTML = "";
 
-}
+		dadosTraduzido__.forEach((registroInserido, cont) => {
+			const line__ = document.createElement('tr');
 
+			line__.innerHTML = `
+			<td>${cont +1}º</td>
+			<td>${registroInserido.usuario_nome}</td>
+			<td>${registroInserido.passeios_complexos}</td>
+			`;
+			DivTabelasCom.appendChild(line__);
+		});
+	} catch(erro) {
+		console.error('FALHA CAPTURADA..: ',erro);
 
-let numberAuxi = 1;
-
-function updateRanks() {
-		 for(let i = 0; i < posicaoRankingCom.length; i++) {
-		 	 posicaoRankingCom[i].quant += numberAuxi + 2;
-		 	 numberAuxi++;
-
-if(numberAuxi == posicaoRankingCom.length+1) { 
-   numberAuxi = 1;
-}
+		DivTabelasCom.innerHTML = `
+		<tr>
+ 			<td>Erro ao carregar o ranking(2)</td>
+		</tr>
+		`;
 	}
-
-	posicaoRankingCom.sort((a,b) => b.quant - a.quant);
-	ShowPlayers();
-	
 }
-ShowPlayers();
-	setInterval(updateRanks,5000);
-	
-//
+
+window.addEventListener('DOMContentLoaded',updateRankPerComp);
+setInterval(updateRankPerComp,4000);
 
 
 
-
-
-
- 

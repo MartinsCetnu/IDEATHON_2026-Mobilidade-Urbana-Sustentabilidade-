@@ -4,56 +4,41 @@
 //quilometragem rodada. Esta informação será capturada no próprio BD e
 //disposta em uma tabela dinâmica ranqueada.
 
-const rankingDinamico = [
-	  {nome: "Larissa", quant: 960},
-		{nome: "Eduardo", quant: 720},
-		{nome: "Isadora", quant: 640},
-		{nome: "Augusto", quant: 620},
-		{nome: "Claudio", quant: 423},
-		{nome: "Roger",   quant: 322},
-		{nome: "Douglas", quant: 239.1},
-		{nome: "Maya",    quant: 239},
-];
+async function updateRankPerKm() {
 
-const divTabelaPerKm = document.getElementById("UltimoCorpoDaTabela");
-const btnFunctionKm = document.getElementById("btnShowKm");
-let finalNumberAux = 1;
+const divTabelaPerKm = document.getElementById("Corpo");
 
-function ShowLastTable() {
-	divTabelaPerKm.innerHTML = "";
+try {
+	const callAPI = await fetch('http://localhost:3000/api/ranking');
+	if(!callAPI.ok) throw new Error ('Infelizmente houve um erro na comunicacao...');
 
-	rankingDinamico.forEach((dadoAtual,index) => {
-		 const newLine = divTabelaPerKm.insertRow(-1);
+	const dadosTraduzido = await callAPI.json();
 
-		 const valorCelula = newLine.insertCell(0);
-		 valorCelula.textContent = index + 1;
+divTabelaPerKm.innerHTML = "";
 
-		 const novaCelula = newLine.insertCell(1);
-		 novaCelula.textContent = dadoAtual.nome;
+	dadosTraduzido.forEach((registroInserido, contador) => {
+		const line = document.createElement('tr');
 
-		 const ultimaCelula = newLine.insertCell(2);
-		 ultimaCelula.textContent = dadoAtual.quant;
+		line.innerHTML = `
+		<td>${contador+1}º</td>
+		<td>${registroInserido.usuario_nome}</td>
+		<td>${registroInserido.quilometragem_rodada}</td>
+		`;
+
+		divTabelaPerKm.appendChild(line);
 	});
+	}	 	catch (erro) {
+	console.error('Erro na renderização das linhas..:',erro);
+
+	divTabelaPerKm.innerHTML = `
+    <tr>
+              <td colspan="3" style="text-align: center; color: red; font-weight: bold;">
+                Erro ao carregar o ranking...
+              </td>
+            </tr>
+	`;	
+ }
 }
 
-function updateLevel() {
-	for(let i = 0; i < rankingDinamico.length;i++) {
-		rankingDinamico[i].quant += finalNumberAux * 2;
-		finalNumberAux++;
-
-		if(finalNumberAux == rankingDinamico.length+1) {
-			finalNumberAux = 1;
-		}
-	}
-	rankingDinamico.sort((a,b) => b.quant - a.quant);
-	ShowLastTable();
-}
-
-ShowLastTable();
-
-setInterval(updateLevel,2000);
-
-
-
-
-
+window.addEventListener('DOMContentLoaded',updateRankPerKm);
+setInterval(updateRankPerKm,5000);

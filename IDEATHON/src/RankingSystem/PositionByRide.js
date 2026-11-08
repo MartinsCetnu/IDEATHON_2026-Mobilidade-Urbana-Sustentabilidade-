@@ -3,66 +3,38 @@
 
 //Div Tabelas:
 // -> Posicao Ranking
-const posicaoRanking = [
-	{nome: "Larissa", quant: 10 },
-	{nome: "Eduardo", quant: 8},
-	{nome: "Isadora", quant: 7},
-	{nome: "Augusto", quant: 5},
-	{nome: "Claudio", quant: 5},
-	{nome: "Roger", quant:   3},
-	{nome: "Douglas", quant: 2},
-	{nome: "Maya", quant: 0}
-];
 
 
-
-const  DivTabelas = document.getElementById("CorpoDaTabela");
-const buttonFunction1 = document.getElementById("btnShowPass");
-
-
- function showRanks() {
- DivTabelas.innerHTML = "";
-  posicaoRanking.forEach((dadoAtual,index) => {
-	
-	const newRow = DivTabelas.insertRow(-1);
+async function updateRankPerRide() {
   
-	const valorCelula = newRow.insertCell(0);
-	valorCelula.textContent = index +1;
-	
-	const novaCelula = newRow.insertCell(1);
-	novaCelula.textContent = dadoAtual.nome;
-	
-	const ultimaCelula = newRow.insertCell(2);
-	ultimaCelula.textContent = Math.floor(dadoAtual.quant);
-});	
+   const divTabelas = document.getElementById("Corpo__");
+	try {
+	 const callAPI_ = await fetch('http://localhost:2000/api/rankingCom');
+	 if(!callAPI_.ok) throw new Error ('Infelizmente houve um erro na comunicacao(1)...');
 
-}
+	 const dadosTraduzido_ = await callAPI_.json();
 
+	 divTabelas.innerHTML = "";
 
-let numberAux = 1;
+	 dadosTraduzido_.forEach((registroInserido, cont) => {
+	 	 const line_ = document.createElement('tr');
 
-function changeRanks() {
-		 for(let i = 0; i < posicaoRanking.length; i++) {
-		 	 posicaoRanking[i].quant += numberAux + 1;
-		 	 numberAux++;
+	 	 line_.innerHTML = `
+		<td>${cont + 1}º</td>
+		<td>${registroInserido.usuario_nome}</td>
+		<td>${registroInserido.passeios_finalizados}</td>
+	 	 `;
+	 	 divTabelas.appendChild(line_);
+	 });
+	}  catch(erro) {
+		console.error('FALHA IDENTIFICADA..: ',erro);
 
-if(numberAux == posicaoRanking.length+1) { 
-   numberAux = 1;
-}
+		divTabelas.innerHTML = `
+ 		<tr> 
+		  <td>Erro ao carregar o ranking(1)</td>
+ 		</tr>
+		`;
 	}
-
-	posicaoRanking.sort((a,b) => b.quant - a.quant);
-	showRanks();
-	
 }
-showRanks();
-	setInterval(changeRanks,3000);
-	
-//
-
-
-
-
-
-
-
+window.addEventListener('DOMContentLoaded',updateRankPerRide);
+setInterval(updateRankPerRide,5000);
