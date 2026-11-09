@@ -16,6 +16,8 @@
 
 <img width="884" height="463" alt="Organograma" src="https://github.com/user-attachments/assets/3cfc725d-2dc9-4e9f-a232-edb4984803f2" />
 
+ ORGANIZAÇÃO DA EQUIPE..:
+
 Augusto (Capitão) --> Responsável pela implementação de features, criação e organização do repositório, integração e comunicação do projeto com o banco de dados e desenvolvedor responsável pela funcionalidade Rank);
 
 Rúbia Coltro (Designer Visual) --> Responsável pelos wireframes do projeto desenvolvido, apresentação visual da proposta do projeto e design visual definitivo do site (responsável pelos documentos estáticos visuais .html e .css);
@@ -43,7 +45,4 @@ Diego Mateus (Desenvolvedor Responsável pela funcionalidade 'verifica-passeios'
 
 Para o server foi utilizado --> Xampp-for-linux-x64 (versão: 8.2.4-0);
 Hospedagem na internet..: ngrok.
-
-   
- Organização da Equipe..:
  
