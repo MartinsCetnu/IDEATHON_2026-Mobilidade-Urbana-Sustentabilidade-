@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Syncopate:wght@700&display=swap">
+		<link rel="stylesheet" href="pedal.css">
+		<link rel="stylesheet" href="leaflet.css?v=2">	
+		<script src="leaflet.js"></script>
+		<title>Criar Cronograma</title>
+	</head>
+	<body>
+		<div class = "conta"> </div>
+		<div class = "menubackground"> <!--depois vejo como colocar cada um desses botões como REAIS botões-->
+			<div class = "menuselected"> criar cronograma </div>
+			<a href= "passeios programados.php">
+				<div class = "menuoptions"> verificar passeios </div>
+			</a>
+			<a href= "rankings.html">
+				<div class = "menuoptions"> rankings e conquistas </div>
+			</a>	
+		</div>
+		<div class = "conteudo-conteiner"> 
+			<div class = "conteudo-title">CRIAR CRONOGRAMA</div>
+			<div class = "conteudo">
+				<div class = "mapa" id="map"> </div> <!--div de colocar o mapa com o trajetório no google maps. pegar url do trajeto para banco de dados-->
+					<!--A partir daqui começa as mudanças para o back-end, @Augusto-->
+				<form class="conteudo-escrito" id="form-pedal" onsubmit="event.preventDefault();">
+					<div class="formulario-painel">
+
+						<div class="campo_main">
+						<div class="grupo-forms">
+							<label for="nome_pedal">Nome do Passeio</label>
+							<input type="text" id="nome_pedal" placeholder="Ex: Pedalada Noturna no Centro" required>
+						</div>
+
+						<div class ="grupo-forms">
+							<label for="ponto_partida">Ponto de Partida</label>
+							<input type="text" id="ponto_partida" placeholder="Ex: Praça Central, ao lado do BB" required>
+						</div>
+
+							  <div class="grupo-forms">
+                <label for="ponto_final">Fim do Pedal</label>
+                <input type="text" id="ponto_final" placeholder="Ex: Drogaria Farmais" required>
+            </div>
+
+						
+						<div class="grupo-forms">
+						 <label for="descricao_Passeio">Descrição/Recados</label>
+						 <input type="text" id="descricao_pedal" placeholder="Ex: tragam água, Bom para iniciantes">
+						</div>			
+					</div>
+							
+						<div class="bloco-tempo">
+							<div class="grupo-forms">
+								<label for="data_pedal">Data</label>
+								<input type="date" id="data_pedal" required>
+							</div>
+							
+							<div class="grupo-forms">
+								<label for="hora_pedal">Horário</label>
+								<input type="time" id="hora_pedal" required>
+							</div>
+
+							<div class="grupo-forms">
+								<label for="Km">quilometragem</label>
+								<input type="number" step="0.2"id="Km" required>
+							</div>
+						</div>
+					</div>
+				
+					<input type="hidden" id="rota_coordenadas">
+					
+					<!-- Botão centralizado na parte inferior -->
+					<button type="submit" class="botao-criar">Criar Pedal</button>
+				</form>
+				 <!--Fim do meu front-end (@Augusto)-->
+			</div>
+		</div>
+		<script>
+		document.getElementById('form-pedal').addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const dados = {
+				NameRide: document.getElementById('nome_pedal').value,
+				LocIni: document.getElementById('ponto_partida').value,
+				LocEnd: document.getElementById('ponto_final').value,
+				DataDate: document.getElementById('data_pedal').value,
+				DataHour: document.getElementById('hora_pedal').value,
+				DataKm: parseFloat(document.getElementById('Km').value)
+			};
+
+			try {
+				const callingAPI_insert = await fetch ('http://localhost:3001/api/insertingInto', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body:JSON.stringify(dados)
+				});
+				if(!callingAPI_insert.ok)  throw new Error ('Erro na Comunicação!');
+
+				const resposta = await callingAPI_insert.json();
+				alert('GRAVADO COM SUCESSO!');
+				document.getElementById('form-pedal').reset();
+			} 
+			 catch(erro) {
+			 	console.error('Submit falhou..:',erro);
+			 }
+		});
+		</script>
+		<script>
+ 		 const mapa = L.map('map').setView([-21.2089, -50.4408], 13);
+
+ 		 L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+ 		     attribution: '© OpenStreetMap contributors'
+ 		 }).addTo(mapa);
+ 		 
+
+		mapa.whenReady(function() {
+			setTimeout(() => {
+				mapa.invalidateSize();
+			}, 250);
+		});
+
+
+ 		 let listaDeCordenadas = [];
+ 		 let linhaParaRota = null;
+ 		 let marcadores = [];
+
+ 		 mapa.on('click', function (evento) {
+ 		 	const latlng = evento.latlng;
+
+ 		 	listaDeCordenadas.push([latlng.lat, latlng.lng]);
+
+ 		 	const newPin = L.marker([latlng.lat, latlng.lng]).addTo(mapa);
+ 		 	marcadores.push(newPin);
+
+ 		 	 if(listaDeCordenadas.length > 1) {
+ 		 	 		if(linhaParaRota) 
+ 		 	 		{
+ 		 	 			linhaParaRota.setLangs(listaDeCordenadas);
+ 		 	 		}
+ 		 	 		else 
+ 		 	 		{
+ 		 	 			linhaParaRota = L.polyline(listaDeCordenadas, {
+ 		 	 				color: '#438d7d',
+ 		 	 				weight: 5,
+ 		 	 				opacity: 0.8
+ 		 	 			}).addTo(mapa);	
+ 		 	 			
+ 		 	 		}
+ 		 	 }
+ 		 	 document.getElementById('rota_coordenadas').value = JSON.stringfy(listaDeCordenadas);
+ 		 	 console.log("Coordenadas do Trajeto..: ", document.getElementById('rota_coordenadas').value);
+ 		 }); 		 
+		</script>
+	</body>
+</html>
+	
