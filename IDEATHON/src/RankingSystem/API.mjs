@@ -3,12 +3,9 @@ import cors from 'cors';
 import pool from '../../configs/dataBaseConnection.mjs';
 import cron from 'node-cron';
 
+export const router = express.Router();
 
-const aplicativo = express();
-
-aplicativo.use(cors()); //Aqui vai ficar a permissão para o HTML acessa a API.
-
-aplicativo.get('/api/ranking', async(req, res) => {
+router.get('/api/ranking', async(req, res) => {
 	try {
 		const [linhas] = await pool.query('SELECT usuario_nome, quilometragem_rodada FROM usuarios ORDER BY quilometragem_rodada DESC');
 		res.json(linhas);
@@ -32,5 +29,3 @@ cron.schedule('*/3 * * * * *', async () => {
 			console.error('Foi identificado um erro..:', error);
 		}
 })
-
-aplicativo.listen(3000, () => console.log('Server Running on 3000'));

@@ -8,7 +8,13 @@ async function updateRankPerComp() {
 
 	const DivTabelasCom = document.getElementById("Corpo_");
 	try {
-		const callAPI__ = await fetch ('http://localhost:5000/api/rankingRide');
+		const callAPI__ = await fetch ('/api/rankingRide', {
+			method: 'GET',
+			headers: {
+				'ngrok-skip-browser-warning': 'true'
+			}
+		});
+		
 		if(!callAPI__.ok) throw new Error ('Erro de Comunicacao IDENTIFICADO!!');
 
 		const dadosTraduzido__ = await callAPI__.json();

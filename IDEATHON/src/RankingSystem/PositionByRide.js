@@ -9,7 +9,12 @@ async function updateRankPerRide() {
   
    const divTabelas = document.getElementById("Corpo__");
 	try {
-	 const callAPI_ = await fetch('http://localhost:2000/api/rankingCom');
+	 const callAPI_ = await fetch('/api/rankingCom', {
+	 	method:'GET',
+	 	headers: {
+	 		'ngrok-skip-browser-warning': 'true'
+	 	}
+	 });
 	 if(!callAPI_.ok) throw new Error ('Infelizmente houve um erro na comunicacao(1)...');
 
 	 const dadosTraduzido_ = await callAPI_.json();

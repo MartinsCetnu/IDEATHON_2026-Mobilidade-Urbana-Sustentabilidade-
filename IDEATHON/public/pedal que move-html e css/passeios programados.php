@@ -1,4 +1,7 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once __DIR__ . '/../../src/Passeios.php';
 ?>
 <!DOCTYPE html>
@@ -6,6 +9,8 @@ require_once __DIR__ . '/../../src/Passeios.php';
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="icon" type="image/x-icon" href="Icons/man-riding-bike-or-cycling-green-rounded-circle-symbol-18948.svg">		
+		<base href="/ideathon/IDEATHON/public/pedal que move-html e css/">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Syncopate:wght@700&display=swap">
 		<link rel="stylesheet" href="pedal(2).css">
 		<link rel="stylesheet" href="leaflet.css">
@@ -15,7 +20,7 @@ require_once __DIR__ . '/../../src/Passeios.php';
 	</head>
 	<body>
 		<div class = "conta"> </div>
-		<div class = "menubackground"> <!--depois vejo como colocar cada um desses botões como REAIS botões-->
+		<div class = "menubackground">
 			<a href = "Criar_Cronograma.html">	
 				<div class = "menuoptions"> criar cronograma </div> 
 			</a>	
@@ -26,28 +31,25 @@ require_once __DIR__ . '/../../src/Passeios.php';
 		</div>
 		<div class = "conteudo-conteiner"> 
 			<div class = "conteudo-title">PASSEIOS PROGRAMADOS</div>
-			<div class = "conteudo"> <!--div q tem q se repetir a cada passeio disponível. uma abaixo da outra-->
-				<div class = "mapa" id="map"> </div> <!--div de mostrar o mapa com o trajetório no google maps. pegar url do trajeto para banco de dados-->
+			<div class = "conteudo">
+				<div class = "mapa" id="map"> </div>
 				<div class = "conteudo-escrito"> 
-				<!--Aqui começa o meu campo de GET do banco de dados @Augusto-->
-					 <h3 class="passeio-titulo">Passeio Disponível</h3> <!-- Nome do Passeio -->
+					 <h3 class="passeio-titulo">Passeio Disponível</h3>
         
         <div class="passeio-info">
             <p><strong>Partida:</strong> <span id="ponto-partida"> <?php echo htmlspecialchars($passeio['passeio_locini'] ?? 'Não Informado'); ?></span></p>
             <p><strong>Destino:</strong> <span id="ponto-final"><?php echo htmlspecialchars($passeio['passeio_locfim'] ?? 'Não informado'); ?></span></p>
             <p><strong>Horário:</strong> <span id="horario"><?php echo !empty($passeio['passeio_hora']) ? date('H:i', strtotime($passeio['passeio_hora'])) : '--:--'; ?></span></p>
-            <p><strong>Data:</strong> <span id="data"><?php echo date('d/m/Y', strtotime($passeio['passeio_data']));  ?></span></p>
-            <p><strong>Distância:</strong> <span id="data"><?php echo htmlspecialchars($passeio['passeio_distancia'] ?? 'Valor não encontrado');   ?> km</span></p> 
-            <p><strong>Interessados:</strong> <span id="interessados"> <?php echo $total_interessados; ?></span></p>
+            <p><strong>Data:</strong> <span id="data"><?php echo isset($passeio['passeio_data']) ? date('d/m/Y', strtotime($passeio['passeio_data'])) : '--/--/----';  ?></span></p>
+            <p><strong>Distância:</strong> <span id="distancia"><?php echo htmlspecialchars($passeio['passeio_distancia'] ?? 'Valor não encontrado');   ?> km</span></p> 
+            <p><strong>Interessados:</strong> <span id="interessados"> <?php echo $total_interessados ?? 0; ?></span></p>
         </div>
 			<form action="Salvar_Interesse.php" method="POST">
-			                    <input type="hidden" name="passeio_id" value="<?php echo $passeio_id; ?>">
-			                    <input type="hidden" name="usuario_id" value="<?php echo $_SESSION['usuario_id']; ?>">
+			                    <input type="hidden" name="passeio_id" value="<?php echo $passeio_id ?? ''; ?>">
+			                    <input type="hidden" name="usuario_id" value="<?php echo $_SESSION['usuario_id'] ?? ''; ?>">
 			                    <button type="submit" class="btn-interesse">Tenho Interesse</button>
 			                </form>
-        
-        <!--Fim @Augusto-->
-				 </div> <!--div de colocar informações do passeio--> <!--colocar data, hora, endereço de partida e de chegada, e número de pessoas que já clicaram em ter interesse aqui. se quiser, o botão também. depois eu altero o css de botões-->	
+				 </div>
 			</div>
 		</div>
 		<script>

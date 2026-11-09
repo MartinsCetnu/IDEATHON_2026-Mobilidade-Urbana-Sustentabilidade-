@@ -3,11 +3,11 @@ import express from 'express';
 import cors from 'cors';
 import pool from '../../configs/dataBaseConnection.mjs';
 import cron from 'node-cron';
-const app = express();
 
-app.use (cors());
+export const router = express.Router();
 
-app.get('/api/rankingRide', async(req, res) => {
+
+router.get('/api/rankingRide', async(req, res) => {
 	try {
 		const [linhas_] = await pool.query('SELECT usuario_nome, passeios_complexos FROM usuarios ORDER BY passeios_complexos DESC');
 		res.json(linhas_);
@@ -31,8 +31,3 @@ cron.schedule('*/10 * * * * *', async () => {
 		console.error('Foi identificado um erro..:', error);
 	}
 })
-
-
-
-
-app.listen(5000, () => console.log('Server Running on 5000'));

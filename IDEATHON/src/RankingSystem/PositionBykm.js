@@ -9,7 +9,12 @@ async function updateRankPerKm() {
 const divTabelaPerKm = document.getElementById("Corpo");
 
 try {
-	const callAPI = await fetch('http://localhost:3000/api/ranking');
+	const callAPI = await fetch('/api/ranking', {
+		method: 'GET',
+		headers: {
+			'ngrok-skip-browser-warning': 'true'
+		}
+	});
 	if(!callAPI.ok) throw new Error ('Infelizmente houve um erro na comunicacao...');
 
 	const dadosTraduzido = await callAPI.json();

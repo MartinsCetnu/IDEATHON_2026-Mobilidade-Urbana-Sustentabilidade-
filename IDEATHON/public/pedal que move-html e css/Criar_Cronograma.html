@@ -4,10 +4,14 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<base href="/ideathon/IDEATHON/public/pedal que move-html e css/">
+    <link rel="icon" type="image/x-icon" href="Icons/man-riding-bike-or-cycling-green-rounded-circle-symbol-18948.svg">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Syncopate:wght@700&display=swap">
 		<link rel="stylesheet" href="pedal.css">
 		<link rel="stylesheet" href="leaflet.css?v=2">	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.css" />
 		<script src="leaflet.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.js"></script>
 		<title>Criar Cronograma</title>
 	</head>
 	<body>
@@ -65,7 +69,7 @@
 
 							<div class="grupo-forms">
 								<label for="Km">quilometragem</label>
-								<input type="number" step="0.2"id="Km" required>
+								<input type="number" step="0.01" id="Km" required>
 							</div>
 						</div>
 					</div>
@@ -91,10 +95,11 @@
 			};
 
 			try {
-				const callingAPI_insert = await fetch ('http://localhost:3001/api/insertingInto', {
+				const callingAPI_insert = await fetch ('/api/insertingInto', {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
+					'ngrok-skip-browser-warning': 'true'
 				},
 				body:JSON.stringify(dados)
 				});
@@ -110,50 +115,91 @@
 		});
 		</script>
 		<script>
- 		 const mapa = L.map('map').setView([-21.2089, -50.4408], 13);
+ 		const mapa = L.map('map').setView([-21.2089, -50.4408], 13);
 
- 		 L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
- 		     attribution: '© OpenStreetMap contributors'
- 		 }).addTo(mapa);
- 		 
+L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+}).addTo(mapa);
 
-		mapa.whenReady(function() {
-			setTimeout(() => {
-				mapa.invalidateSize();
-			}, 250);
-		});
+mapa.whenReady(function() {
+    setTimeout(() => {
+        mapa.invalidateSize();
+    }, 250);
+});
 
 
- 		 let listaDeCordenadas = [];
- 		 let linhaParaRota = null;
- 		 let marcadores = [];
+let quilometragemTotal = 0;
+let nomeDaRota = "";
 
- 		 mapa.on('click', function (evento) {
- 		 	const latlng = evento.latlng;
 
- 		 	listaDeCordenadas.push([latlng.lat, latlng.lng]);
+const routingControl = L.Routing.control({
+    waypoints: [], 
+    routeWhileDragging: false,
+    show: false, 
+    createMarker: function(i, wp, nWps) {
+       
+        return L.marker(wp.latLng);
+    },
+    lineOptions: {
+        styles: [{ color: '#438d7d', opacity: 0.8, weight: 5 }]
+    }
+}).addTo(mapa);
 
- 		 	const newPin = L.marker([latlng.lat, latlng.lng]).addTo(mapa);
- 		 	marcadores.push(newPin);
 
- 		 	 if(listaDeCordenadas.length > 1) {
- 		 	 		if(linhaParaRota) 
- 		 	 		{
- 		 	 			linhaParaRota.setLangs(listaDeCordenadas);
- 		 	 		}
- 		 	 		else 
- 		 	 		{
- 		 	 			linhaParaRota = L.polyline(listaDeCordenadas, {
- 		 	 				color: '#438d7d',
- 		 	 				weight: 5,
- 		 	 				opacity: 0.8
- 		 	 			}).addTo(mapa);	
- 		 	 			
- 		 	 		}
- 		 	 }
- 		 	 document.getElementById('rota_coordenadas').value = JSON.stringfy(listaDeCordenadas);
- 		 	 console.log("Coordenadas do Trajeto..: ", document.getElementById('rota_coordenadas').value);
- 		 }); 		 
+routingControl.on('routesfound', function(e) {
+    const routes = e.routes;
+    const rotaPrincipal = routes[0];
+
+
+    quilometragemTotal = rotaPrincipal.summary.totalDistance / 1000;
+
+    document.getElementById('Km').value = quilometragemTotal.toFixed(2); //Eu ESCREVI ESSE DAQUI :)
+    
+
+    nomeDaRota = rotaPrincipal.name || "Rota Personalizada??"; //(eu não faço a menor ideia do que isso faz, eu só copiei de um video BR...)
+
+
+			if(nomeDaRota && nomeDaRota !== "Rota Personalizada??") 
+			{
+				const montanteDeRuas = nomeDaRota.split(',').map(rua => rua.trim());
+
+				if (montanteDeRuas.length > 0) {
+					document.getElementById('ponto_partida').value = montanteDeRuas[0];
+
+					if(montanteDeRuas.length > 1) {
+						document.getElementById('ponto_final').value = montanteDeRuas[montanteDeRuas.length -1];
+					} else {
+						document.getElementById('ponto_final'.value = montanteDeRuas[0]);
+					}
+				}
+			}
+
+    const coordenadasReais = rotaPrincipal.coordinates.map(p => [p.lat, p.lng]);
+
+
+    document.getElementById('rota_coordenadas').value = JSON.stringify(coordenadasReais);
+
+    console.log("=== Nova Rota Calculada por Ruas ===");
+    console.log("Nome da Rota.........: ", nomeDaRota);
+    console.log("Distância Real (KM)...: ", quilometragemTotal.toFixed(2) + " km");
+});
+
+
+mapa.on('click', function (evento) {
+    const latlng = evento.latlng;
+
+
+    const waypointsAtuais = routingControl.getWaypoints();
+    
+
+    const pontosFiltrados = waypointsAtuais.filter(wp => wp.latLng !== null).map(wp => wp.latLng);
+    
+
+    pontosFiltrados.push(latlng);
+
+
+    routingControl.setWaypoints(pontosFiltrados);
+});
 		</script>
 	</body>
 </html>

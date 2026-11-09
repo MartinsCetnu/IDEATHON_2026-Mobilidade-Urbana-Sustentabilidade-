@@ -2,13 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import pool from '../../configs/dataBaseConnection.mjs';
 
-const applicativo = express();
+export const router = express.Router();
 
-// MIDDLEWARES
-applicativo.use(cors());
-applicativo.use(express.json()); //Sem isso, o req.body será 'undefined'
-
-applicativo.post('/api/insertingInto', async (req, res) => {
+router.post('/api/insertingInto', async (req, res) => {
     try {
         const { NameRide, LocIni, LocEnd, DataDate, DataHour, DataKm } = req.body;
         
@@ -28,4 +24,3 @@ applicativo.post('/api/insertingInto', async (req, res) => {
     }
 });
 
-applicativo.listen(3001, () => console.log('Server Running on 3001'));

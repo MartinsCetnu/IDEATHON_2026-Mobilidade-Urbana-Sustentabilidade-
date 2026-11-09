@@ -4,11 +4,9 @@ import cors from 'cors';
 import pool from '../../configs/dataBaseConnection.mjs';
 import cron from 'node-cron';
 
-const app = express();
+export const router = express.Router();
 
-app.use (cors());
-
-app.get('/api/rankingCom', async(req, res) => {
+router.get('/api/rankingCom', async(req, res) => {
 	try {
 		const [linhas_] = await pool.query('SELECT usuario_nome, passeios_finalizados FROM usuarios ORDER BY passeios_finalizados DESC');
 		res.json(linhas_);
@@ -32,5 +30,3 @@ cron.schedule('*/5 * * * * *', async () => {
 		console.error('Foi identificado um erro..:', error);
 	}
 })
-
-app.listen(2000, () => console.log('Server Running on 2000'));
